@@ -1,8 +1,11 @@
 import { useState } from "react";
 import RequestAccessCode from "../../components/RequestAccessCode";
 import Chart from "../../components/Chart";
+import Menu from "../../components/Menu";
+import movingAverage, { TData } from "../../utils/movingAverage";
 
 const Frequencia = () => {
+  const [averageValue, setAverageValue] = useState(10);
   const [frequencia, setFrequencia] = useState(
     JSON.parse(localStorage.getItem("sheetFrequencia") ?? "[]")
   );
@@ -29,97 +32,107 @@ const Frequencia = () => {
     (item: any) => new Date(item.Data).getDay() === 0
   );
 
-  const labels = filteredFrequencia.map((item: any) =>
+  const x = filteredFrequencia.map((item: any) =>
     new Date(item.Data).toLocaleDateString()
   );
 
-  const manha: number[] = filteredFrequencia.map((item: any) => {
-    let sum = 0;
-    if (item["Horário"] === "manhã") {
-      for (const key in item) {
-        if (key !== "Data" && key !== "Horário" && key !== "Comentario") {
-          sum += Number(item[key] || 0);
+  const manha: TData[] = filteredFrequencia
+    .map((item: any) => {
+      let sum = 0;
+      if (item["Horário"] === "manhã") {
+        for (const key in item) {
+          if (key !== "Data" && key !== "Horário" && key !== "Comentario") {
+            sum += Number(item[key] || 0);
+          }
         }
       }
-    }
-    return sum;
-  });
-  const noite: number[] = filteredFrequencia.map((item: any) => {
-    let sum = 0;
-    if (item["Horário"] === "noite") {
-      for (const key in item) {
-        if (key !== "Data" && key !== "Horário" && key !== "Comentario") {
-          sum += Number(item[key] || 0);
+      return sum;
+    })
+    .map((y: number, i: number) => ({ x: x[i], y }));
+  const noite: TData[] = filteredFrequencia
+    .map((item: any) => {
+      let sum = 0;
+      if (item["Horário"] === "noite") {
+        for (const key in item) {
+          if (key !== "Data" && key !== "Horário" && key !== "Comentario") {
+            sum += Number(item[key] || 0);
+          }
         }
       }
-    }
-    return sum;
-  });
-
-  const average = (data: number[], size: number): number[] =>
-    data.map((_, index) => {
-      const tmpData = data
-        .slice(
-          Math.max(0, index - size),
-          Math.min(data.length - 1, index + size)
-        )
-        .filter((n) => n);
-      return tmpData.reduce((a, d) => a + d, 0) / tmpData.length;
-    });
+      return sum;
+    })
+    .map((y: number, i: number) => ({ x: x[i], y }));
 
   return (
     <>
+      <Menu>
+        <div className="flex flex-col">
+          <label
+            htmlFor="mediaMovel"
+            className="mb-1 text-sm font-medium text-gray-700"
+          >
+            Média Móvel
+          </label>
+          <input
+            type="number"
+            id="mediaMovel"
+            min="0"
+            max="100"
+            value={averageValue}
+            onChange={(e) => setAverageValue(+e.target.value)}
+            className="w-24 p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+          />
+        </div>
+      </Menu>
       <Chart
-        config={{
-          data: {
-            labels,
-            datasets: [
-              {
-                type: "bar",
-                label: "manhã",
-                data: manha,
-                backgroundColor: "rgba(255, 99, 132, 0.5)",
-                borderColor: "rgba(255, 99, 132, 1)",
-                borderWidth: 1,
-              },
-              {
-                type: "bar",
-                label: "noite",
-                data: noite,
-                backgroundColor: "rgba(54, 162, 235, 0.5)",
-                borderColor: "rgba(54, 162, 235, 1)",
-                borderWidth: 1,
-              },
-              {
-                type: "line",
-                label: "média manhã",
-                data: average(manha, 10),
-                borderColor: "rgba(255, 99, 132, 1)",
-                fill: false,
-                tension: 0.1,
-                pointRadius: 0,
-              },
-              {
-                type: "line",
-                label: "noite manhã",
-                data: average(noite, 10),
-                borderColor: "rgba(54, 162, 235, 1)",
-                fill: false,
-                tension: 0.1,
-                pointRadius: 0,
-              },
-            ],
-          },
-          options: {
-            scales: {
-              y: {
-                beginAtZero: true,
-              },
+        data={{
+          datasets: [
+            {
+              type: "bar",
+              label: "manhã",
+              data: manha as any,
+              backgroundColor: "rgba(255, 99, 132, 0.5)",
+              borderColor: "rgba(255, 99, 132, 1)",
+              borderWidth: 1,
+            },
+            {
+              type: "bar",
+              label: "noite",
+              data: noite as any,
+              backgroundColor: "rgba(54, 162, 235, 0.5)",
+              borderColor: "rgba(54, 162, 235, 1)",
+              borderWidth: 1,
+            },
+            {
+              type: "line",
+              label: "média manhã",
+              data: movingAverage(manha, averageValue) as any,
+              borderColor: "rgba(255, 99, 132, 1)",
+              fill: false,
+              tension: 0.1,
+              pointRadius: 0,
+            },
+            {
+              type: "line",
+              label: "noite manhã",
+              data: movingAverage(noite, averageValue) as any,
+              borderColor: "rgba(54, 162, 235, 1)",
+              fill: false,
+              tension: 0.1,
+              pointRadius: 0,
+            },
+          ],
+        }}
+        options={{
+          scales: {
+            y: {
+              type: "linear",
+              position: "left",
+              beginAtZero: true,
             },
           },
         }}
       />
-      <button onClick={() => localStorage.clear()}>Reset</button>
     </>
   );
 };

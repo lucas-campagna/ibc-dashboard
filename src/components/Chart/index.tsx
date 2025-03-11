@@ -1,14 +1,18 @@
 import React, { useRef, useEffect, useState } from "react";
-import Chart from "chart.js/auto";
+import Chart, { ChartConfiguration } from "chart.js/auto";
 import zoomPlugin from "chartjs-plugin-zoom";
 
 Chart.register(zoomPlugin);
 
-type BarProps = {
-  config: Chart["config"];
+type ChartProps = {
+  data: ChartConfiguration["data"];
+  options: ChartConfiguration["options"];
 };
 
-const ChartComponent: React.FC<BarProps> = ({ config }: BarProps) => {
+const ChartComponent: React.FC<ChartProps> = ({
+  data,
+  options,
+}: ChartProps) => {
   const chartRef = useRef<HTMLCanvasElement>(null);
   const [chartInstance, setChartInstance] = useState<Chart | null>(null);
 
@@ -17,14 +21,16 @@ const ChartComponent: React.FC<BarProps> = ({ config }: BarProps) => {
       const ctx = chartRef.current.getContext("2d");
       if (ctx) {
         const newChart = new Chart(ctx, {
-          ...config,
+          data,
           options: {
+            ...options,
+            // animation: false,
             transitions: {
               zoom: {
                 animation: {
-                  duration: 0
-                }
-              }
+                  duration: 0,
+                },
+              },
             },
             plugins: {
               zoom: {
@@ -44,7 +50,7 @@ const ChartComponent: React.FC<BarProps> = ({ config }: BarProps) => {
               },
             },
           },
-        });
+        } as any);
         setChartInstance(newChart);
         return () => {
           if (newChart) {
@@ -53,13 +59,15 @@ const ChartComponent: React.FC<BarProps> = ({ config }: BarProps) => {
         };
       }
     }
-  }, [config]);
+  }, []);
 
   useEffect(() => {
     if (chartInstance) {
+      chartInstance.options.animation = false;
+      chartInstance.data = data;
       chartInstance.update();
     }
-  }, [chartInstance, config]);
+  }, [data]);
 
   return <canvas ref={chartRef}></canvas>;
 };
