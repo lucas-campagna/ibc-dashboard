@@ -1,17 +1,21 @@
 import React, { useRef, useEffect, useState } from "react";
-import Chart, { ChartConfiguration } from "chart.js/auto";
+import Chart, { ChartConfiguration, ChartConfigurationCustomTypesPerDataset } from "chart.js/auto";
+import { getRelativePosition } from "chart.js/helpers";
 import zoomPlugin from "chartjs-plugin-zoom";
+import { TData } from "../../utils/movingAverage";
 
 Chart.register(zoomPlugin);
 
 type ChartProps = {
-  data: ChartConfiguration["data"];
+  datasets: ChartConfiguration["data"]["datasets"];
   options: ChartConfiguration["options"];
+  onHover?: (prop: TData) => void;
 };
 
 const ChartComponent: React.FC<ChartProps> = ({
-  data,
+  datasets,
   options,
+  onHover,
 }: ChartProps) => {
   const chartRef = useRef<HTMLCanvasElement>(null);
   const [chartInstance, setChartInstance] = useState<Chart | null>(null);
@@ -21,10 +25,17 @@ const ChartComponent: React.FC<ChartProps> = ({
       const ctx = chartRef.current.getContext("2d");
       if (ctx) {
         const newChart = new Chart(ctx, {
-          data,
+          data: { datasets },
           options: {
             ...options,
-            // animation: false,
+            onHover: (e: any) => {
+              const canvasPosition = getRelativePosition(e, newChart);
+              const x = newChart.scales.x.getValueForPixel(canvasPosition.x);
+              const y = newChart.scales.y.getValueForPixel(
+                canvasPosition.y
+              ) as number;
+              onHover?.({ x, y });
+            },
             transitions: {
               zoom: {
                 animation: {
@@ -50,7 +61,7 @@ const ChartComponent: React.FC<ChartProps> = ({
               },
             },
           },
-        } as any);
+        } as ChartConfigurationCustomTypesPerDataset);
         setChartInstance(newChart);
         return () => {
           if (newChart) {
