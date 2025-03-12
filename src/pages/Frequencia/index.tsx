@@ -3,6 +3,7 @@ import RequestAccessCode from "../../components/RequestAccessCode";
 import Chart from "../../components/Chart";
 import Menu from "../../components/Menu";
 import movingAverage, { TData } from "../../utils/movingAverage";
+import NumberInput from "../../components/NumberInput";
 
 const Frequencia = () => {
   const [averageValue, setAverageValue] = useState(10);
@@ -66,23 +67,11 @@ const Frequencia = () => {
   return (
     <>
       <Menu>
-        <div className="flex flex-col">
-          <label
-            htmlFor="mediaMovel"
-            className="mb-1 text-sm font-medium text-gray-700"
-          >
-            Média Móvel
-          </label>
-          <input
-            type="number"
-            id="mediaMovel"
-            min="0"
-            max="100"
-            value={averageValue}
-            onChange={(e) => setAverageValue(+e.target.value)}
-            className="w-24 p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
-          />
-        </div>
+        <NumberInput
+          label='Média Móvel'
+          value={averageValue}
+          onChange={setAverageValue}
+        />
       </Menu>
       <Chart
         data={{

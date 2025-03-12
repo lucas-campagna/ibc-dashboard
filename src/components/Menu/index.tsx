@@ -1,4 +1,5 @@
-import { JSX, useEffect, useState } from "react";
+import { JSX, useState } from "react";
+import CloseButton from "../CloseButton";
 
 type MenuProps = {
   children: JSX.Element;
@@ -7,37 +8,25 @@ type MenuProps = {
 const Menu = ({ children }: MenuProps) => {
   const [isVisible, setIsVisible] = useState(true);
 
-  useEffect(() => {
-    let clock: number;
-    const handleMouseMove = (event: any) => {
-      const screenWidth = window.innerWidth;
-      const mouseX = event.clientX;
-      const threshold = screenWidth * 0.3;
-
-      clearTimeout(clock);
-      if (mouseX <= threshold) {
-        setIsVisible(true);
-      } else {
-        clock = setTimeout(() => setIsVisible(false), 1000);
-      }
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-
-    return () => {
-      clearTimeout(clock);
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, []);
-
   return (
-    <div
-      className={`fixed top-30 left-4 bg-gray-100 p-4 rounded-lg shadow-md transition-opacity duration-300 ${
-        isVisible ? "opacity-100" : "opacity-0"
-      }`}
-    >
-      {children}
-    </div>
+    <>
+      <button
+        onClick={() => setIsVisible(true)}
+        className={`fixed top-32 left-0 bg-gray-100 p-4 rounded-r-lg focus:outline-none shadow-md transition-transform duration-500 ease-in-out ${
+          !isVisible ? "-translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        {">"}
+      </button>
+      <div
+        className={`fixed top-30 bg-gray-100 p-4 rounded-lg shadow-md transition-transform duration-500 ease-in-out ${
+          isVisible ? "left-4 -translate-x-0" : "left-0 -translate-x-full"
+        }`}
+      >
+        <CloseButton onClick={() => setIsVisible(false)} />
+        {children}
+      </div>
+    </>
   );
 };
 
