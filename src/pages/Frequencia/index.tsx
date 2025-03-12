@@ -3,12 +3,19 @@ import RequestAccessCode from "../../components/RequestAccessCode";
 import Menu from "../../components/Menu";
 import NumberInput from "../../components/NumberInput";
 import PrimaryGraph from "./components/PrimaryGraph";
+import SecondaryGraph, {CompositionType} from "./components/SecondaryGraph";
 
 const Frequencia = () => {
   const [averageSize, setAverageSize] = useState(10);
   const [frequencia, setFrequencia] = useState(
     JSON.parse(localStorage.getItem("sheetFrequencia") ?? "[]")
   );
+  const [composition, setComposition] = useState<CompositionType>({
+    Homens: 0,
+    Mulheres: 0,
+    Jovens: 0,
+    Adolescentes: 0,
+  });
 
   const handleOnFrequencia = async (sheet: any) => {
     const newFrequencia = await sheet?.get("frequencia");
@@ -28,6 +35,8 @@ const Frequencia = () => {
     );
   }
 
+  const sumByKeysIncludes = (d: CompositionType, key: string) => +Object.entries(d).reduce((a, [k, v]) => k.includes(key) ? a + v : a, 0)
+
   return (
     <>
       <Menu>
@@ -40,11 +49,22 @@ const Frequencia = () => {
       <h1 className="font-bold uppercase">
         Frequência total ao longo dos domingos
       </h1>
-      <PrimaryGraph frequencia={frequencia} averageSize={averageSize}/>
+      <PrimaryGraph
+        frequencia={frequencia}
+        averageSize={averageSize}
+        onHover={(composition: any) =>
+          setComposition({
+            Homens: sumByKeysIncludes(composition, 'Homens'),
+            Mulheres: sumByKeysIncludes(composition, 'Mulheres'),
+            Jovens: sumByKeysIncludes(composition, 'Jovens'),
+            Adolescentes: sumByKeysIncludes(composition, 'Adolescentes'),
+          })
+        }
+      />
       <div className="flex flex-col md:flex-row gap-4">
         <div>
           <h1 className="font-bold uppercase">Composição dos membros</h1>
-          
+          <SecondaryGraph composition={composition}/>
         </div>
       </div>
     </>

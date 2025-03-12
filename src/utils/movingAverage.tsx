@@ -1,6 +1,6 @@
-export type TData = {
+export type TData<T = number> = {
   x: any;
-  y: number | null;
+  y: T | null;
 };
 
 function movingAverage(data: TData[], size: number): TData[] {

@@ -4,7 +4,7 @@ import movingAverage, { TData } from "../../../utils/movingAverage";
 type PrimaryGraphProps = {
   frequencia: any[];
   averageSize: number;
-  onHover?: TData;
+  onHover?: (props: any) => void;
 };
 
 function PrimaryGraph({ frequencia, averageSize, onHover }: PrimaryGraphProps) {
@@ -90,7 +90,7 @@ function PrimaryGraph({ frequencia, averageSize, onHover }: PrimaryGraphProps) {
           },
         },
       }}
-      onHover={({x}) => frequencia[x] && onHover?.(frequencia[x])}
+      onHover={({ x }) => frequencia[x] && onHover?.(frequencia[x])}
     />
   );
 }
