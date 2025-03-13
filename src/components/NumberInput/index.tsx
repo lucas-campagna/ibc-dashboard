@@ -1,7 +1,7 @@
 type NumberInputProps = {
   label?: string;
   value: number;
-  onChange: (value: NumberInputProps["value"]) => void;
+  onChange?: (value: NumberInputProps["value"]) => void;
 };
 
 const NumberInput = ({ label, value, onChange }: NumberInputProps) => (
@@ -22,7 +22,7 @@ const NumberInput = ({ label, value, onChange }: NumberInputProps) => (
       min="0"
       max="100"
       value={value}
-      onChange={(e) => onChange(+e.target.value)}
+      onChange={(e) => onChange?.(+e.target.value)}
       className="w-24 p-2 bg-white border rounded-md focus:outline-none focus:ring focus:border-blue-300"
     />
   </div>

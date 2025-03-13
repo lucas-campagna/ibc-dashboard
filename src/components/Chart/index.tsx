@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import Chart, {
   ChartConfiguration,
   ChartConfigurationCustomTypesPerDataset,
+  plugins,
 } from "chart.js/auto";
 import { getRelativePosition } from "chart.js/helpers";
 import zoomPlugin from "chartjs-plugin-zoom";
@@ -14,6 +15,7 @@ type ChartProps = {
   type?: ChartConfiguration["type"];
   labels?: string[];
   options?: ChartConfiguration["options"];
+  plugins?: ChartConfiguration["plugins"];
   onHover?: (prop: TData) => void;
 };
 
@@ -22,6 +24,7 @@ const ChartComponent: React.FC<ChartProps> = ({
   type,
   labels,
   options,
+  plugins,
   onHover,
 }: ChartProps) => {
   const chartRef = useRef<HTMLCanvasElement>(null);
@@ -54,6 +57,7 @@ const ChartComponent: React.FC<ChartProps> = ({
               },
             },
             plugins: {
+              ...plugins,
               zoom: {
                 pan: {
                   enabled: true,

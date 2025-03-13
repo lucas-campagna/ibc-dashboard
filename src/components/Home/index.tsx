@@ -1,8 +1,7 @@
 const Home = () => (
   <div className="text-lg">
-    <p>
-      <span className="text-5xl float-left mr-2">E</span>
-      ste aplicativo foi desenvolvido para a gestão interna da Igreja Batista do
+    <p className="first-letter:float-left first-letter:mr-0 first-letter:text-5xl first-letter:font-bold first-letter:text-gray-500 first-letter:tracking-widest first-letter:uppercase">
+      este aplicativo foi desenvolvido para a gestão interna da Igreja Batista do
       Conforto, oferecendo ferramentas para acompanhamento de dados e
       informações relevantes para a administração da igreja. Através dele, a
       liderança poderá acessar relatórios de membros, controle de finanças,

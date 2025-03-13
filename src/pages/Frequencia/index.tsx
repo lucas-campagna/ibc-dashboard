@@ -4,6 +4,10 @@ import Menu from "../../components/Menu";
 import NumberInput from "../../components/NumberInput";
 import PrimaryGraph from "./components/PrimaryGraph";
 import SecondaryGraph, { CompositionType } from "./components/SecondaryGraph";
+import Card from "./components/Card";
+import HorizontalSplit from "../../components/HorizontalSplit";
+import Checkbox from "../../components/Checkbox";
+import RadioButtonGroup from "../../components/Inputs/RadioButtonGroup";
 
 const Frequencia = () => {
   const [averageSize, setAverageSize] = useState(10);
@@ -11,10 +15,10 @@ const Frequencia = () => {
     JSON.parse(localStorage.getItem("sheetFrequencia") ?? "[]")
   );
   const [composition, setComposition] = useState<CompositionType>({
-    Homens: 0,
-    Mulheres: 0,
-    Jovens: 0,
-    Adolescentes: 0,
+    Homens: 1,
+    Mulheres: 1,
+    Jovens: 1,
+    Adolescentes: 1,
   });
 
   const handleOnFrequencia = async (sheet: any) => {
@@ -46,28 +50,31 @@ const Frequencia = () => {
           value={averageSize}
           onChange={setAverageSize}
         />
+        {/* <RadioButtonGroup
+          name="tipo-de-grafico"
+          options={["a", "b", "c"]}
+          selected="a"
+        /> */}
       </Menu>
-      <h1 className="font-bold uppercase">
-        Frequência total ao longo dos domingos
-      </h1>
-      <PrimaryGraph
-        frequencia={frequencia}
-        averageSize={averageSize}
-        onHover={(composition: any) =>
-          setComposition({
-            Homens: sumByKeysIncludes(composition, "Homens"),
-            Mulheres: sumByKeysIncludes(composition, "Mulheres"),
-            Jovens: sumByKeysIncludes(composition, "Jovens"),
-            Adolescentes: sumByKeysIncludes(composition, "Adolescentes"),
-          })
-        }
-      />
-      <div className="flex flex-col md:flex-row gap-4">
-        <div>
-          <h1 className="font-bold uppercase">Composição dos membros</h1>
+      <Card title="Frequência total ao longo dos domingos">
+        <PrimaryGraph
+          frequencia={frequencia}
+          averageSize={averageSize}
+          onHover={(composition: any) =>
+            setComposition({
+              Homens: sumByKeysIncludes(composition, "Homens"),
+              Mulheres: sumByKeysIncludes(composition, "Mulheres"),
+              Jovens: sumByKeysIncludes(composition, "Jovens"),
+              Adolescentes: sumByKeysIncludes(composition, "Adolescentes"),
+            })
+          }
+        />
+      </Card>
+      <HorizontalSplit sizes={[1, 2]}>
+        <Card>
           <SecondaryGraph composition={composition} />
-        </div>
-      </div>
+        </Card>
+      </HorizontalSplit>
     </>
   );
 };
