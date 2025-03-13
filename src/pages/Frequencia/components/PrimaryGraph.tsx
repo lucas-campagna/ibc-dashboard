@@ -49,7 +49,7 @@ function PrimaryGraph({ frequencia, averageSize, onHover }: PrimaryGraphProps) {
         {
           type: "bar",
           label: "manhã",
-          data: manha as any,
+          data: manha.map(({y}) => y),
           backgroundColor: "rgba(255, 99, 132, 0.5)",
           borderColor: "rgba(255, 99, 132, 1)",
           borderWidth: 1,
@@ -57,7 +57,7 @@ function PrimaryGraph({ frequencia, averageSize, onHover }: PrimaryGraphProps) {
         {
           type: "bar",
           label: "noite",
-          data: noite as any,
+          data: noite.map(({y}) => y),
           backgroundColor: "rgba(54, 162, 235, 0.5)",
           borderColor: "rgba(54, 162, 235, 1)",
           borderWidth: 1,
@@ -65,7 +65,7 @@ function PrimaryGraph({ frequencia, averageSize, onHover }: PrimaryGraphProps) {
         {
           type: "line",
           label: "média manhã",
-          data: movingAverage(manha, averageSize) as any,
+          data: movingAverage(manha, averageSize).map(({y}) => y),
           borderColor: "rgba(255, 99, 132, 1)",
           fill: false,
           tension: 0.1,
@@ -74,13 +74,14 @@ function PrimaryGraph({ frequencia, averageSize, onHover }: PrimaryGraphProps) {
         {
           type: "line",
           label: "noite manhã",
-          data: movingAverage(noite, averageSize) as any,
+          data: movingAverage(noite, averageSize).map(({y}) => y),
           borderColor: "rgba(54, 162, 235, 1)",
           fill: false,
           tension: 0.1,
           pointRadius: 0,
         },
       ]}
+      labels={manha.map(({x}) => x)}
       options={{
         scales: {
           y: {

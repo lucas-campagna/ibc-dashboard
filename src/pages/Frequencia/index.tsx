@@ -3,7 +3,7 @@ import RequestAccessCode from "../../components/RequestAccessCode";
 import Menu from "../../components/Menu";
 import NumberInput from "../../components/NumberInput";
 import PrimaryGraph from "./components/PrimaryGraph";
-import SecondaryGraph, {CompositionType} from "./components/SecondaryGraph";
+import SecondaryGraph, { CompositionType } from "./components/SecondaryGraph";
 
 const Frequencia = () => {
   const [averageSize, setAverageSize] = useState(10);
@@ -35,7 +35,8 @@ const Frequencia = () => {
     );
   }
 
-  const sumByKeysIncludes = (d: CompositionType, key: string) => +Object.entries(d).reduce((a, [k, v]) => k.includes(key) ? a + v : a, 0)
+  const sumByKeysIncludes = (d: CompositionType, key: string) =>
+    +Object.entries(d).reduce((a, [k, v]) => (k.includes(key) ? a + v : a), 0);
 
   return (
     <>
@@ -54,17 +55,17 @@ const Frequencia = () => {
         averageSize={averageSize}
         onHover={(composition: any) =>
           setComposition({
-            Homens: sumByKeysIncludes(composition, 'Homens'),
-            Mulheres: sumByKeysIncludes(composition, 'Mulheres'),
-            Jovens: sumByKeysIncludes(composition, 'Jovens'),
-            Adolescentes: sumByKeysIncludes(composition, 'Adolescentes'),
+            Homens: sumByKeysIncludes(composition, "Homens"),
+            Mulheres: sumByKeysIncludes(composition, "Mulheres"),
+            Jovens: sumByKeysIncludes(composition, "Jovens"),
+            Adolescentes: sumByKeysIncludes(composition, "Adolescentes"),
           })
         }
       />
       <div className="flex flex-col md:flex-row gap-4">
         <div>
           <h1 className="font-bold uppercase">Composição dos membros</h1>
-          <SecondaryGraph composition={composition}/>
+          <SecondaryGraph composition={composition} />
         </div>
       </div>
     </>
