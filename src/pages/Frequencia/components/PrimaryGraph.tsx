@@ -91,7 +91,7 @@ function PrimaryGraph({ frequencia, averageSize, onHover }: PrimaryGraphProps) {
           },
         },
       }}
-      onHover={({ x }) => frequencia[x] && onHover?.(frequencia[x])}
+      onHover={({ x }) => filteredFrequencia[x] && onHover?.(filteredFrequencia[x])}
     />
   );
 }

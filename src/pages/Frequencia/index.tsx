@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import RequestAccessCode from "../../components/RequestAccessCode";
 import Menu from "../../components/Menu";
 import Number from "../../components/Inputs/Number";
@@ -6,8 +6,10 @@ import PrimaryGraph from "./components/PrimaryGraph";
 import SecondaryGraph, { CompositionType } from "./components/SecondaryGraph";
 import Card from "./components/Card";
 import HorizontalSplit from "../../components/HorizontalSplit";
+import Table from "../../components/Table";
 
 const Frequencia = () => {
+  const [date, setDate] = useState({ Data: new Date().getTime() });
   const [averageSize, setAverageSize] = useState(10);
   const [frequencia, setFrequencia] = useState(
     JSON.parse(localStorage.getItem("sheetFrequencia") ?? "[]")
@@ -37,7 +39,21 @@ const Frequencia = () => {
     );
   }
 
-  const sumByKeysIncludes = (d: CompositionType, key: string) =>
+  useEffect(() => {
+    if (date) {
+      const clock = setTimeout(() => {
+        setComposition({
+          Homens: sumByKeysIncludes(date, "Homens"),
+          Mulheres: sumByKeysIncludes(date, "Mulheres"),
+          Jovens: sumByKeysIncludes(date, "Jovens"),
+          Adolescentes: sumByKeysIncludes(date, "Adolescentes"),
+        });
+      }, 10);
+      return () => clearTimeout(clock);
+    }
+  }, [date]);
+
+  const sumByKeysIncludes = (d: Record<string, number>, key: string) =>
     +Object.entries(d).reduce((a, [k, v]) => (k.includes(key) ? a + v : a), 0);
 
   return (
@@ -53,19 +69,24 @@ const Frequencia = () => {
         <PrimaryGraph
           frequencia={frequencia}
           averageSize={averageSize}
-          onHover={(composition: any) =>
-            setComposition({
-              Homens: sumByKeysIncludes(composition, "Homens"),
-              Mulheres: sumByKeysIncludes(composition, "Mulheres"),
-              Jovens: sumByKeysIncludes(composition, "Jovens"),
-              Adolescentes: sumByKeysIncludes(composition, "Adolescentes"),
-            })
-          }
+          onHover={(composition: any) => setDate(composition)}
         />
       </Card>
       <HorizontalSplit sizes={[1, 2]}>
         <Card>
           <SecondaryGraph composition={composition} />
+        </Card>
+        <Card>
+          <Table
+            current={{
+              ...date,
+              Data: new Date(date.Data).toLocaleDateString(),
+            }}
+            data={frequencia.map((f: any) => ({
+              ...f,
+              Data: new Date(f.Data).toLocaleDateString(),
+            }))}
+          />
         </Card>
       </HorizontalSplit>
     </>
