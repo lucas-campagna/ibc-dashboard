@@ -1,10 +1,10 @@
-type NumberInputProps = {
+type NumberProps = {
   label?: string;
   value: number;
-  onChange?: (value: NumberInputProps["value"]) => void;
+  onChange?: (value: NumberProps["value"]) => void;
 };
 
-const NumberInput = ({ label, value, onChange }: NumberInputProps) => (
+const Number = ({ label, value, onChange }: NumberProps) => (
   <div className="flex flex-col">
     {label ? (
       <label
@@ -28,4 +28,4 @@ const NumberInput = ({ label, value, onChange }: NumberInputProps) => (
   </div>
 );
 
-export default NumberInput;
+export default Number;

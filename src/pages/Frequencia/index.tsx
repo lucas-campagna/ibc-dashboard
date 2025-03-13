@@ -1,13 +1,11 @@
 import { useState } from "react";
 import RequestAccessCode from "../../components/RequestAccessCode";
 import Menu from "../../components/Menu";
-import NumberInput from "../../components/NumberInput";
+import Number from "../../components/Inputs/Number";
 import PrimaryGraph from "./components/PrimaryGraph";
 import SecondaryGraph, { CompositionType } from "./components/SecondaryGraph";
 import Card from "./components/Card";
 import HorizontalSplit from "../../components/HorizontalSplit";
-import Checkbox from "../../components/Checkbox";
-import RadioButtonGroup from "../../components/Inputs/RadioButtonGroup";
 
 const Frequencia = () => {
   const [averageSize, setAverageSize] = useState(10);
@@ -45,16 +43,11 @@ const Frequencia = () => {
   return (
     <>
       <Menu>
-        <NumberInput
+        <Number
           label="Média Móvel"
           value={averageSize}
           onChange={setAverageSize}
         />
-        {/* <RadioButtonGroup
-          name="tipo-de-grafico"
-          options={["a", "b", "c"]}
-          selected="a"
-        /> */}
       </Menu>
       <Card title="Frequência total ao longo dos domingos">
         <PrimaryGraph
